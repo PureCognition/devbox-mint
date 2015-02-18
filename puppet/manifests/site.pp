@@ -52,7 +52,7 @@ gvm::package { 'springboot':
 	require => Class['gvm']
 }
 
-class { 'springtoolsuite':
+class { 'sts':
 	require => [Package['curl']]
 }
 

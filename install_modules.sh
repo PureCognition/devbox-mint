@@ -4,4 +4,4 @@ puppet module install paulosuzart-gvm
 puppet module install saz-vim 
 puppet module install maestrodev-rvm
 puppet module install puppetlabs-apt
-puppet module install puppet module install funthomas424242-karaf
+puppet module install funthomas424242-karaf
