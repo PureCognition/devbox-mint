@@ -1,6 +1,7 @@
 #! /bin/bash
-puppet module install puppetlabs/stdlib #--force --modulepath '/vagrant/puppet/modules'
-puppet module install paulosuzart-gvm #--force --modulepath '/vagrant/puppet/modules'
-puppet module install saz-vim #--force --modulepath '/vagrant/puppet/modules'
+puppet module install puppetlabs/stdlib 
+puppet module install paulosuzart-gvm 
+puppet module install saz-vim 
 puppet module install maestrodev-rvm
 puppet module install puppetlabs-apt
+puppet module install puppet module install funthomas424242-karaf
