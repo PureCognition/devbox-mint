@@ -3,6 +3,7 @@
 # This module manages SpringSource Tool Suite
 #
 class sts {
+	$sts_url = hiera('url::sts')
 	$sts_version = hiera('version::sts')
 	$eclipse_release = hiera('version::eclipse::release')
 	$eclipse_minor_release = hiera('version::eclipse::release::minor') 
@@ -14,7 +15,8 @@ class sts {
 	}
 	$sts_install = "/opt"
 	$sts_home = "${sts_install}/springsource/sts-${sts_version}.RELEASE"
-	$sts_url = "http://download.springsource.com/release/STS/${sts_version}/dist/e${eclipse_release}/springsource-tool-suite-${sts_version}.RELEASE-e${eclipse_version}-linux-gtk${flavor}.tar.gz"
+	#http://download.springsource.com/release/STS/3.6.3.SR1/dist/e4.4/spring-tool-suite-3.6.3.SR1-e4.4.1-linux-gtk.tar.gz
+	#$sts_url = "http://download.springsource.com/release/STS/${sts_version}/dist/e${eclipse_release}/springsource-tool-suite-${sts_version}.RELEASE-e${eclipse_version}-linux-gtk${flavor}.tar.gz"
 	$sts_symlink = "${sts_install}/sts"
 	$sts_executable = "${sts_symlink}/STS"
 	
@@ -56,7 +58,7 @@ class sts {
 	
 	file { "/usr/share/applications/sts.desktop" :
 		require => File[$sts_symlink],
-		content => template('workstation/sts.desktop.erb'),
+		content => template('sts/sts.desktop.erb'),
 	}	
 
 

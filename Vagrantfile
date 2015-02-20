@@ -10,11 +10,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # please see the online documentation at vagrantup.com.
 
   # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box = "rjkernick/linuxMint17Xfce"
+  config.vm.box = "ubuntu/trusty32"#rjkernick/linuxMint17Xfce"
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
-   config.vm.box_url = "https://vagrantcloud.com/rjkernick/boxes/linuxMint17Xfce/versions/1.2.0/providers/virtualbox.box"
+   
+#  ---  commented out for 32/64 issue ---#
+   #config.vm.box_url = "https://vagrantcloud.com/rjkernick/boxes/linuxMint17Xfce/versions/1.2.0/providers/virtualbox.box"
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
@@ -49,9 +51,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
      vb.gui = true
   #
   #   # Use VBoxManage to customize the VM. For example to change memory:
-     vb.customize ["modifyvm", :id, "--memory", "8182"]
-     vb.customize ["modifyvm", :id, "--vram", "64"]
-     vb.customize ["modifyvm", :id, "--cpus", "4"]
+     vb.customize ["modifyvm", :id, "--memory", "1024"]
+     #vb.customize ["modifyvm", :id, "--vram", "64"]
+     #vb.customize ["modifyvm", :id, "--cpus", "4"]
      vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
 
      #try to improve nw slowness
@@ -59,11 +61,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
    end
  
-   #config.vm.provision "shell", inline: "sudo apt-get update && sudo apt-get install puppet --yes --force-yes"
-
    config.vm.provision "shell", inline: "sudo apt-get install puppet --yes --force-yes"
    config.vm.provision "shell", path: "install_modules.sh"
-
+   
    config.vm.provision :puppet do |puppet|
    #  puppet.facter = {
    #   "lsbdistcodename" => "trusty"
