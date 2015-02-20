@@ -6,7 +6,7 @@ group{'devs':
 	ensure => present
 }
 
-$password = "$6$WT565taI$m0MaEHfw6IE1Df4n6gbLg8tAm9fvn6aOQHyhnX1BVv3AXJ0hnFJzgyjPLYDwl3LtnO7HnOAPCsdimGS4A.7d4." #hiera('password::user')
+$password = "$6$55EyhaQKjbOqHz$2onaeLwR97RHWMMTm0ufpRgWX7SYmMDF1h03RWMTZ00ldrKjwlJw9fkvMyj/EexoVFvkFDAvRMKtQx1dBdWTn0" #hiera('password::user')
 
 user{"ethan":
 	ensure => present,
@@ -43,15 +43,22 @@ package {'sublime-text':
 	require => [Exec['apt-get update']]
 }
 
-exec{'/bin/cd /home/ethan && git clone https://github.com/ethanwinograd/dotfiles.git':}
-exec{'/bin/cd /home/ethan && git clone https://github.com/ethanwinograd/scripts.git':}
-exec{'/bin/chmod 0755 /home/ethan/dotfiles/install_dotfiles.sh':}
-exec{'/bin/chmod 0755 /home/ethan/scripts/vim_setup.sh':}
-exec{'/bin/chmod 0755 /home/ethan/scripts/ruby_setup.sh':}
+vcsrepo { "/home/ethan/dotfiles":
+  ensure   => present,
+  provider => git,
+  source   => "git://github.com/ethanwinograd/dotfiles.git",
+}
 
-exec{'/bin/cd /home/ethan && ./dotfiles/install_dotfiles.sh':}
-exec{'/bin/cd /home/ethan && ./scripts/vim_setup.sh':}
-#exec{'/bin/cd /home/ethan && ./scripts/ruby_setup.sh':}
+vcsrepo { "/home/ethan/scripts":
+  ensure   => present,
+  provider => git,
+  source   => "git://github.com/ethanwinograd/scripts.git",
+}
+
+
+#exec{'cd /home/ethan && ./dotfiles/install_dotfiles.sh':}
+#exec{'cd /home/ethan && ./scripts/vim_setup.sh':}
+##exec{'cd /home/ethan && ./scripts/ruby_setup.sh':}
 
 
 	

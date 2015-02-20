@@ -8,7 +8,7 @@ version::redis: 2.6.4
 version::rvm: 1.22.3
 version::spring-boot: 1.2.1
 
-version::sts: 3.6.3.SR1
+version::sts: 3.6.3
 version::eclipse::release: 4.4
 version::eclipse::release::minor: 1
 

@@ -8,34 +8,37 @@ class sts {
 	$eclipse_release = hiera('version::eclipse::release')
 	$eclipse_minor_release = hiera('version::eclipse::release::minor') 
 	$eclipse_version = "${eclipse_release}.${$eclipse_minor_release}"
-	$sts_tarball = "/tmp/sts-${sts_version}.tar.gz"
+	$sts_tarball = hiera('url::sts::filename')
+	
 	$flavor = $architecture ? {
 		"amd64" => "-x86_64",
 		default => "" 
 	}
 	$sts_install = "/opt"
-	$sts_home = "${sts_install}/springsource/sts-${sts_version}.RELEASE"
-	#http://download.springsource.com/release/STS/3.6.3.SR1/dist/e4.4/spring-tool-suite-3.6.3.SR1-e4.4.1-linux-gtk.tar.gz
-	#$sts_url = "http://download.springsource.com/release/STS/${sts_version}/dist/e${eclipse_release}/springsource-tool-suite-${sts_version}.RELEASE-e${eclipse_version}-linux-gtk${flavor}.tar.gz"
+	$sts_home = "${sts_install}/sts-bundle/sts-${sts_version}.SR1"
+	
 	$sts_symlink = "${sts_install}/sts"
 	$sts_executable = "${sts_symlink}/STS"
 	
+	$sts_download_url = "${sts_url}/${sts_tarball}"
+    $sts_temp_path = "/tmp/${sts_tarball}"
+	
 	exec { "download-sts":
-		command => "/usr/bin/wget -O ${sts_tarball} ${sts_url}",
+		command => "/usr/bin/wget -O ${sts_temp_path} ${sts_download_url}",
 		require => Package["wget"],
-		creates => $sts_tarball,
+		creates => $sts_temp_path,
 		timeout => 1200,	
 	}
-	
-	file { "${sts_tarball}" :
+
+	file { "${sts_temp_path}" :
 		require => Exec["download-sts"],
 		ensure => file,
 	}
 	
 	exec { "install-sts" :
-		require => File["${sts_tarball}"],
+		require => File["${sts_temp_path}"],
 		cwd => $sts_install,
-		command => "/bin/tar -xa -f ${sts_tarball}",
+		command => "/bin/tar -xaz -f ${sts_temp_path}",
 		creates => $sts_home,
 	}
 	
