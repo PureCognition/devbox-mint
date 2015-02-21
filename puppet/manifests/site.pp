@@ -2,20 +2,21 @@ include apt
 include stdlib
 include vim
 
-group{'devs':
+group{'admin':
 	ensure => present
 }
 
-$password = "$6$55EyhaQKjbOqHz$2onaeLwR97RHWMMTm0ufpRgWX7SYmMDF1h03RWMTZ00ldrKjwlJw9fkvMyj/EexoVFvkFDAvRMKtQx1dBdWTn0" #hiera('password::user')
+$password = '$6$55EyhaQKjbOqHz$2onaeLwR97RHWMMTm0ufpRgWX7SYmMDF1h03RWMTZ00ldrKjwlJw9fkvMyj/EexoVFvkFDAvRMKtQx1dBdWTn0'
+#hiera('password::user')
 
 user{"ethan":
 	ensure => present,
 	shell => '/bin/bash',
 	home => '/home/ethan',
-	gid => 'devs',
+	gid => 'admin',
 	managehome => true,
-	password => $password,# generate('/bin/sh', '-c', "mkpasswd -m sha-512 ${password} | tr -d '\n'"),
-	require => [Group['devs']]
+	password => $password,
+	require => [Group['admin']]
 }
 
 Exec{
@@ -55,13 +56,19 @@ vcsrepo { "/home/ethan/scripts":
   source   => "git://github.com/ethanwinograd/scripts.git",
 }
 
-
-#exec{'cd /home/ethan && ./dotfiles/install_dotfiles.sh':}
-#exec{'cd /home/ethan && ./scripts/vim_setup.sh':}
-##exec{'cd /home/ethan && ./scripts/ruby_setup.sh':}
+exec{ "/bin/chown ethan /home/ethan":}
 
 
-	
+exec{ "/bin/bash ./dotfiles/install_dotfiles.sh":
+	user => ethan,
+	cwd => "/home/ethan"
+}
+
+exec{ "/bin/bash ./scripts/vim_setup.sh":
+	user => ethan,
+	cwd => "/home/ethan"
+}
+
 
 
 #class {'rvm_wrapper':
@@ -80,9 +87,7 @@ vcsrepo { "/home/ethan/scripts":
 #	require => Class['gvm']
 #}
 
-class { 'sts':
-	#require => [Package['curl']]
-}
+#class { 'sts':}
 
 #class {'karaf':
 #  user => 'ethan',
