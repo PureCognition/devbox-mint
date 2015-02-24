@@ -56,17 +56,21 @@ vcsrepo { "/home/ethan/scripts":
   source   => "git://github.com/ethanwinograd/scripts.git",
 }
 
-exec{ "/bin/chown ethan /home/ethan":}
+exec{ "/bin/chown ethan /home/ethan":
+  require => [User['ethan']]
+}
 
 
 exec{ "/bin/bash ./dotfiles/install_dotfiles.sh":
 	user => ethan,
-	cwd => "/home/ethan"
+	cwd => "/home/ethan",
+	require => [User['ethan']]
 }
 
 exec{ "/bin/bash ./scripts/vim_setup.sh":
 	user => ethan,
-	cwd => "/home/ethan"
+	cwd => "/home/ethan",
+	require => [User['ethan']]
 }
 
 
@@ -87,7 +91,7 @@ exec{ "/bin/bash ./scripts/vim_setup.sh":
 #	require => Class['gvm']
 #}
 
-#class { 'sts':}
+class { 'sts':}
 
 #class {'karaf':
 #  user => 'ethan',
