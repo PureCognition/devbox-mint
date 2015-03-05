@@ -41,7 +41,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
-  # config.vm.synced_folder "../data", "/vagrant_data"
+  config.vm.synced_folder "\\Users\\winograde\\vbox_share", "/mnt/vbox_share"
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -64,9 +64,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
  
    config.vm.provision "shell", inline: "sudo apt-get install puppet --yes --force-yes"
    config.vm.provision "shell", path: "install_modules.sh"
-   
+  
    config.vm.provision :puppet do |puppet|
-   #  puppet.facter = {
+  #  puppet.facter = {
    #   "lsbdistcodename" => "trusty"
    # }
 

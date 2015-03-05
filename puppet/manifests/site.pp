@@ -6,17 +6,23 @@ group{'admin':
 	ensure => present
 }
 
-$password = '$6$55EyhaQKjbOqHz$2onaeLwR97RHWMMTm0ufpRgWX7SYmMDF1h03RWMTZ00ldrKjwlJw9fkvMyj/EexoVFvkFDAvRMKtQx1dBdWTn0'
-#hiera('password::user')
+group{'vboxsf':
+	ensure => present
+}
 
-user{"ethan":
+#pwd is: 'changeme'
+$password='$6$ccsvgLY33PNZ48x6$kM6DHTjtkcxOfvs/qTR/92RRxPJuNqjGTLeOal8K0d.5XjiwWhuI/ghHlandEqo2U5ajIr89vAxmDLcc6F2Zd.'
+
+$user = hiera('password::user')
+
+user{"${user}":
 	ensure => present,
 	shell => '/bin/bash',
-	home => '/home/ethan',
+	home => "/home/${user}",
 	gid => 'admin',
 	managehome => true,
 	password => $password,
-	require => [Group['admin']]
+	require => [Group['admin'],Group['vboxsf']]
 }
 
 Exec{
@@ -44,46 +50,46 @@ package {'sublime-text':
 	require => [Exec['apt-get update']]
 }
 
-vcsrepo { "/home/ethan/dotfiles":
+vcsrepo { "/home/${user}/dotfiles":
   ensure   => present,
   provider => git,
   source   => "git://github.com/ethanwinograd/dotfiles.git",
 }
 
-vcsrepo { "/home/ethan/scripts":
+vcsrepo { "/home/${user}/scripts":
   ensure   => present,
   provider => git,
   source   => "git://github.com/ethanwinograd/scripts.git",
 }
 
-exec{ "/bin/chown ethan /home/ethan":
-  require => [User['ethan']]
+exec{ "/bin/chown ${user} /home/${user}":
+  require => [User["${user}"]]
 }
 
 
 exec{ "/bin/bash ./dotfiles/install_dotfiles.sh":
-	user => ethan,
-	cwd => "/home/ethan",
-	require => [User['ethan']]
+	user => $user,
+	cwd => "/home/${user}",
+	require => [User["${user}"]]
 }
 
 exec{ "/bin/bash ./scripts/vim_setup.sh":
-	user => ethan,
-	cwd => "/home/ethan",
-	require => [User['ethan']]
+	user => $user,
+	cwd => "/home/${user}",
+	require => [User["${user}"]]
 }
 
-
+class { 'sts':}
 
 #class {'rvm_wrapper':
 #  require => [Package['curl'],Exec['gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3']] 
 #}
 
 #class { 'gvm' :
-#  owner   => 'ethan',
+#  owner   => '${user}',
 #  group   => 'devs',
-#  homedir => '/home/ethan',
-#  require => [Package['wget'], Package['unzip'], User['ethan'], Group['devs'], Package['curl']]
+#  homedir => '/home/${user}',
+#  require => [Package['wget'], Package['unzip'], User['${user}'], Group['devs'], Package['curl']]
 #}
 
 #gvm::package { 'springboot':
@@ -91,11 +97,10 @@ exec{ "/bin/bash ./scripts/vim_setup.sh":
 #	require => Class['gvm']
 #}
 
-class { 'sts':}
 
 #class {'karaf':
-#  user => 'ethan',
+#  user => '${user}',
 #  karafVersion => '3.0.3',
 #  tmpDir => '/tmp',
-#  require => [User['ethan']]
+#  require => [User['${user}']]
 #}
